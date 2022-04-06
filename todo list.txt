@@ -1,0 +1,22 @@
+//* Tiled Map Editor *//
+
+1. Stworzenie mapy
+	1.1 Dodanie granic i kolizji
+	1.2 Dodanie npc
+2. Stworzenie tła domków
+
+//* javaScript *//
+
+1. Dodanie postaci
+2. Dodanie movementu (porusznie mapą)
+3. Animacja poruszania się postaci
+4. Implementacja kolizji
+5. Dodanie randomowych tekstów dla npc na mapie
+6. Aktywowanie wejścia do domków
+7. Przejście z mapy do domków
+8. Dodanie rozmów z npc w domkach (introduction, experience, education, skills)
+
+//* Dodatki *//
+
+1. Dodatkowe animacje na mapie
+2. Muzyka w tle
