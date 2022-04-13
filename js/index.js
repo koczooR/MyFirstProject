@@ -5,25 +5,25 @@ canvas.width = window.innerWidth * 0.9;
 canvas.height = window.innerHeight * 0.9;
 
 const image = new Image();
-image.src = "../img/myProjectMap.png";
-
-const foregroundImg = new Image();
-foregroundImg.src = "../img/Foreground.png";
-
-const foreground2Img = new Image();
-foreground2Img.src = "../img/Foreground2.png";
+image.src = "img/myProjectMap.png";
 
 const playerDown = new Image();
-playerDown.src = "../Assets/Character Assets/playerDown.png";
+playerDown.src = "Assets/Character Assets/playerDown.png";
 
 const playerUp = new Image();
-playerUp.src = "../Assets/Character Assets/playerUp.png";
+playerUp.src = "Assets/Character Assets/playerUp.png";
 
 const playerLeft = new Image();
-playerLeft.src = "../Assets/Character Assets/playerLeft.png";
+playerLeft.src = "Assets/Character Assets/playerLeft.png";
 
 const playerRight = new Image();
-playerRight.src = "../Assets/Character Assets/playerRight.png";
+playerRight.src = "Assets/Character Assets/playerRight.png";
+
+const foregroundImg = new Image();
+foregroundImg.src = "img/Foreground.png";
+
+const foreground2Img = new Image();
+foreground2Img.src = "img/Foreground2.png";
 
 class Sprite {
   constructor({ position, image, sprites }) {
@@ -58,8 +58,8 @@ const totalFrames = 4;
 let currentFrame = 0;
 let srcX = 0;
 let srcY = 0;
-const spriteWidth = playerDown.width / columns;
-const spriteHeight = playerDown.height;
+const spriteWidth = 192 / columns;
+const spriteHeight = 68;
 let framesDrawn = 0;
 
 const background = new Sprite({
@@ -120,8 +120,8 @@ function animate() {
 
   background.draw();
   player.playerDraw();
-  foreground2.draw();
   foreground.draw();
+  foreground2.draw();
 
   framesDrawn++;
   if (framesDrawn >= 15) {
@@ -158,6 +158,7 @@ function animate() {
     player.playerMovement();
   }
 }
+
 animate();
 
 let lastKey = "";
@@ -202,3 +203,7 @@ window.addEventListener("keyup", (e) => {
 
 const audio = document.querySelector("audio");
 audio.volume = 0.05;
+
+window.addEventListener("click", () => {
+  audio.play();
+});
