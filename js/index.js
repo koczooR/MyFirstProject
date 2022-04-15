@@ -1,8 +1,8 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth * 0.9;
-canvas.height = window.innerHeight * 0.9;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 const image = new Image();
 image.src = "img/myProjectMap.png";
@@ -61,18 +61,20 @@ let srcY = 0;
 const spriteWidth = 192 / columns;
 const spriteHeight = 68;
 let framesDrawn = 0;
+const mapWidth = 4620;
+const mapHeight = 2640;
 
 const background = new Sprite({
   position: {
-    x: -1359,
-    y: -860,
+    x: canvas.width / 2 - mapWidth / 2 + 66,
+    y: canvas.height / 2 - mapHeight / 2,
   },
   image: image,
 });
 
 const player = new Sprite({
   position: {
-    x: canvas.width / 2,
+    x: canvas.width / 2 - spriteWidth / 2,
     y: canvas.height / 2,
   },
   image: playerDown,
@@ -86,16 +88,16 @@ const player = new Sprite({
 
 const foreground = new Sprite({
   position: {
-    x: -1359,
-    y: -860,
+    x: canvas.width / 2 - mapWidth / 2 + 66,
+    y: canvas.height / 2 - mapHeight / 2,
   },
   image: foregroundImg,
 });
 
 const foreground2 = new Sprite({
   position: {
-    x: -1359,
-    y: -860,
+    x: canvas.width / 2 - mapWidth / 2 + 66,
+    y: canvas.height / 2 - mapHeight / 2,
   },
   image: foreground2Img,
 });
@@ -120,8 +122,8 @@ function animate() {
 
   background.draw();
   player.playerDraw();
-  foreground.draw();
   foreground2.draw();
+  foreground.draw();
 
   framesDrawn++;
   if (framesDrawn >= 15) {
@@ -158,7 +160,6 @@ function animate() {
     player.playerMovement();
   }
 }
-
 animate();
 
 let lastKey = "";
