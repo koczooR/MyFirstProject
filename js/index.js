@@ -25,6 +25,17 @@ foregroundImg.src = "img/Foreground.png";
 const foreground2Img = new Image();
 foreground2Img.src = "img/Foreground2.png";
 
+const columns = 4;
+const totalFrames = 4;
+let currentFrame = 0;
+let srcX = 0;
+let srcY = 0;
+const spriteWidth = 192 / columns;
+const spriteHeight = 68;
+let framesDrawn = 0;
+const mapWidth = 4620;
+const mapHeight = 2640;
+
 class Sprite {
   constructor({ position, image, sprites }) {
     this.position = position;
@@ -53,16 +64,39 @@ class Sprite {
   }
 }
 
-const columns = 4;
-const totalFrames = 4;
-let currentFrame = 0;
-let srcX = 0;
-let srcY = 0;
-const spriteWidth = 192 / columns;
-const spriteHeight = 68;
-let framesDrawn = 0;
-const mapWidth = 4620;
-const mapHeight = 2640;
+class Border {
+  constructor({ position }) {
+    this.position = position;
+  }
+  draw() {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    ctx.fillRect(this.position.x, this.position.y, 66, 66);
+  }
+}
+
+let borderMap = [];
+for (let i = 0; i < collisionsArray.length; i += 70) {
+  borderMap.push(collisionsArray.slice(i, i + 70));
+}
+
+const borderElements = [];
+
+borderMap.forEach((row, i) => {
+  row.forEach((element, j) => {
+    if (element === 1025) {
+      borderElements.push(
+        new Border({
+          position: {
+            x: j * 66 + canvas.width / 2 - mapWidth / 2 + 66,
+            y: i * 66 + canvas.height / 2 - mapHeight / 2,
+          },
+        })
+      );
+    }
+  });
+});
+
+console.log(borderElements);
 
 const background = new Sprite({
   position: {
@@ -124,6 +158,9 @@ function animate() {
   player.playerDraw();
   foreground2.draw();
   foreground.draw();
+  borderElements.forEach((el) => {
+    el.draw();
+  });
 
   framesDrawn++;
   if (framesDrawn >= 15) {
@@ -135,6 +172,9 @@ function animate() {
     background.position.y += 2;
     foreground.position.y += 2;
     foreground2.position.y += 2;
+    borderElements.forEach((el) => {
+      el.position.y += 2;
+    });
     player.image = player.sprites.up;
     player.playerMovement();
   }
@@ -142,6 +182,9 @@ function animate() {
     background.position.y -= 2;
     foreground.position.y -= 2;
     foreground2.position.y -= 2;
+    borderElements.forEach((el) => {
+      el.position.y -= 2;
+    });
     player.image = player.sprites.down;
     player.playerMovement();
   }
@@ -149,6 +192,9 @@ function animate() {
     background.position.x += 2;
     foreground.position.x += 2;
     foreground2.position.x += 2;
+    borderElements.forEach((el) => {
+      el.position.x += 2;
+    });
     player.image = player.sprites.left;
     player.playerMovement();
   }
@@ -156,6 +202,9 @@ function animate() {
     background.position.x -= 2;
     foreground.position.x -= 2;
     foreground2.position.x -= 2;
+    borderElements.forEach((el) => {
+      el.position.x -= 2;
+    });
     player.image = player.sprites.right;
     player.playerMovement();
   }
