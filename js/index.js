@@ -1,7 +1,7 @@
 const btn = document.querySelector(".btn");
 const container = document.querySelector(".container");
-const audio = new Audio("Assets/Music/pika.mp3");
-audio.volume = 0.05;
+const buttonAudio = new Audio("Assets/Music/pika.mp3");
+buttonAudio.volume = 0.05;
 
 btn.addEventListener("click", function(event) {
     event.preventDefault();
@@ -10,5 +10,5 @@ btn.addEventListener("click", function(event) {
     }, 500);
     container.style.transition = "1s";
     container.style.opacity = "0";
-    audio.play();
+    buttonAudio.play();
 });

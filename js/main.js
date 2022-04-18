@@ -69,7 +69,7 @@ class Border {
     this.position = position;
   }
   draw() {
-    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    ctx.fillStyle = "rgba(255, 0, 0, 0)";
     ctx.fillRect(this.position.x, this.position.y, 66, 66);
   }
 }
@@ -95,8 +95,6 @@ borderMap.forEach((row, i) => {
     }
   });
 });
-
-console.log(borderElements);
 
 const background = new Sprite({
   position: {
@@ -137,23 +135,32 @@ const foreground2 = new Sprite({
 });
 
 const keys = {
-  w: {
+  up: {
     pressed: false,
   },
-  s: {
+  down: {
     pressed: false,
   },
-  a: {
+  left: {
     pressed: false,
   },
-  d: {
+  right: {
     pressed: false,
   },
 };
 
+const movables = [background, foreground, foreground2, ...borderElements];
+
+function isColliding ({ value1, value2 }) {
+  return (value1.position.x + spriteWidth >= value2.position.x &&
+    value1.position.x <= value2.position.x + 66 &&
+    value1.position.y + spriteHeight >= value2.position.y &&
+    value1.position.y + spriteHeight / 2 <= value2.position.y + 66);
+  }
+
 function animate() {
   window.requestAnimationFrame(animate);
-
+  
   background.draw();
   player.playerDraw();
   foreground2.draw();
@@ -163,50 +170,91 @@ function animate() {
   });
 
   framesDrawn++;
-  if (framesDrawn >= 15) {
+  if (framesDrawn >= 10) {
     currentFrame++;
     framesDrawn = 0;
   }
 
-  if (keys.w.pressed && lastKey === "w") {
-    background.position.y += 2;
-    foreground.position.y += 2;
-    foreground2.position.y += 2;
-    borderElements.forEach((el) => {
-      el.position.y += 2;
-    });
+  let moving = true;
+  if (keys.up.pressed && lastKey === "up") {
     player.image = player.sprites.up;
     player.playerMovement();
+
+    for (let i = 0; i < borderElements.length; i++) {
+      const border = borderElements[i];
+
+      if (isColliding({
+        value1: player,
+        value2: {position: {x: border.position.x, y: border.position.y + 3}}
+      })) {
+        moving = false;
+      }
+    }
+    if (moving) {
+      movables.forEach(el => {
+        el.position.y += 3;
+      });
+    }
   }
-  if (keys.s.pressed && lastKey === "s") {
-    background.position.y -= 2;
-    foreground.position.y -= 2;
-    foreground2.position.y -= 2;
-    borderElements.forEach((el) => {
-      el.position.y -= 2;
-    });
+  if (keys.down.pressed && lastKey === "down") {
     player.image = player.sprites.down;
     player.playerMovement();
+
+    for (let i = 0; i < borderElements.length; i++) {
+      const border = borderElements[i];
+
+      if (isColliding({
+        value1: player,
+        value2: {position: {x: border.position.x, y: border.position.y - 3}}
+      })) {
+        moving = false;
+      }
+    }
+    if (moving) {
+      movables.forEach(el => {
+        el.position.y -= 3;
+      });
+    }
   }
-  if (keys.a.pressed && lastKey === "a") {
-    background.position.x += 2;
-    foreground.position.x += 2;
-    foreground2.position.x += 2;
-    borderElements.forEach((el) => {
-      el.position.x += 2;
-    });
+  if (keys.left.pressed && lastKey === "left") {
     player.image = player.sprites.left;
     player.playerMovement();
+
+    for (let i = 0; i < borderElements.length; i++) {
+      const border = borderElements[i];
+
+      if (isColliding({
+        value1: player,
+        value2: {position: {x: border.position.x + 3, y: border.position.y}}
+      })) {
+        moving = false;
+      }
+    }
+    if (moving) {
+      movables.forEach(el => {
+        el.position.x += 3;
+      });
+    }
   }
-  if (keys.d.pressed && lastKey === "d") {
-    background.position.x -= 2;
-    foreground.position.x -= 2;
-    foreground2.position.x -= 2;
-    borderElements.forEach((el) => {
-      el.position.x -= 2;
-    });
+  if (keys.right.pressed && lastKey === "right") {
     player.image = player.sprites.right;
     player.playerMovement();
+
+    for (let i = 0; i < borderElements.length; i++) {
+      const border = borderElements[i];
+
+      if (isColliding({
+        value1: player,
+        value2: {position: {x: border.position.x - 3, y: border.position.y}}
+      })) {
+        moving = false;
+      }
+    }
+    if (moving) {
+      movables.forEach(el => {
+        el.position.x -= 3;
+      });
+    }
   }
 }
 animate();
@@ -216,20 +264,36 @@ let lastKey = "";
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "w":
-      keys.w.pressed = true;
-      lastKey = "w";
+      keys.up.pressed = true;
+      lastKey = "up";
       break;
     case "s":
-      keys.s.pressed = true;
-      lastKey = "s";
+      keys.down.pressed = true;
+      lastKey = "down";
       break;
     case "a":
-      keys.a.pressed = true;
-      lastKey = "a";
+      keys.left.pressed = true;
+      lastKey = "left";
       break;
     case "d":
-      keys.d.pressed = true;
-      lastKey = "d";
+      keys.right.pressed = true;
+      lastKey = "right";
+      break;
+    case "ArrowUp":
+      keys.up.pressed = true;
+      lastKey = "up";
+      break;
+    case "ArrowDown":
+      keys.down.pressed = true;
+      lastKey = "down";
+      break;
+    case "ArrowLeft":
+      keys.left.pressed = true;
+      lastKey = "left";
+      break;
+    case "ArrowRight":
+      keys.right.pressed = true;
+      lastKey = "right";
       break;
   }
 });
@@ -237,23 +301,28 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   switch (e.key) {
     case "w":
-      keys.w.pressed = false;
+      keys.up.pressed = false;
       break;
     case "s":
-      keys.s.pressed = false;
+      keys.down.pressed = false;
       break;
     case "a":
-      keys.a.pressed = false;
+      keys.left.pressed = false;
       break;
     case "d":
-      keys.d.pressed = false;
+      keys.right.pressed = false;
+      break;
+    case "ArrowUp":
+      keys.up.pressed = false;
+      break;
+    case "ArrowDown":
+      keys.down.pressed = false;
+      break;
+    case "ArrowLeft":
+      keys.left.pressed = false;
+      break;
+    case "ArrowRight":
+      keys.right.pressed = false;
       break;
   }
-});
-
-const audio = document.querySelector("audio");
-audio.volume = 0.05;
-
-window.addEventListener("click", () => {
-  audio.play();
 });

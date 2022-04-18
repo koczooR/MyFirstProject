@@ -10,13 +10,16 @@
   <body>
     <div id="preloader"></div>
     <div class="container">
-      <audio src="./Assets/Music/field_theme_1_mp3.mp3" loop></audio>
       <canvas></canvas>
     </div>
     <script>
+      const bgAudio = new Audio("Assets/Music/field_theme_1_mp3.mp3");
+      bgAudio.volume = 0.05;
+      bgAudio.loop = true;
       const preloader = document.getElementById("preloader");
       window.addEventListener("load", function() {
           preloader.style.display = "none";
+          bgAudio.play();
       });
     </script>
     <script src="js/collisionsData.js"></script>
