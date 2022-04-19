@@ -4,8 +4,19 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const columns = 4;
+const totalFrames = 4;
+let currentFrame = 0;
+let srcX = 0;
+let srcY = 0;
+const spriteWidth = 192 / columns;
+const spriteHeight = 68;
+let framesDrawn = 0;
+const mapWidth = 3520;
+const mapHeight = 3564;
+
 const image = new Image();
-image.src = "img/myProjectMap.png";
+image.src = "img/house1_550.png";
 
 const playerDown = new Image();
 playerDown.src = "Assets/Character Assets/playerDown.png";
@@ -20,24 +31,7 @@ const playerRight = new Image();
 playerRight.src = "Assets/Character Assets/playerRight.png";
 
 const foregroundImg = new Image();
-foregroundImg.src = "img/Foreground.png";
-
-const foreground2Img = new Image();
-foreground2Img.src = "img/Foreground2.png";
-
-const npcMapImg = new Image();
-npcMapImg.src = "Assets/Character Assets/npcMap.png";
-
-const columns = 4;
-const totalFrames = 4;
-let currentFrame = 0;
-let srcX = 0;
-let srcY = 0;
-const spriteWidth = 192 / columns;
-const spriteHeight = 68;
-let framesDrawn = 0;
-const mapWidth = 4620;
-const mapHeight = 2640;
+foregroundImg.src = "img/house1Foreground.png";
 
 class Sprite {
   constructor({ position, image, sprites }) {
@@ -73,45 +67,24 @@ class Border {
   }
   draw() {
     ctx.fillStyle = "rgba(255, 0, 0, 0)";
-    ctx.fillRect(this.position.x, this.position.y, 66, 66);
+    ctx.fillRect(this.position.x, this.position.y, 88, 88);
   }
 }
 
-let borderMap = [];
-for (let i = 0; i < collisionsArray.length; i += 70) {
-  borderMap.push(collisionsArray.slice(i, i + 70));
+let house1BorderMap = [];
+for (let i = 0; i < house1CollisionsArray.length; i += 40) {
+  house1BorderMap.push(house1CollisionsArray.slice(i, i + 40));
 }
 
-const borderElements = [];
-borderMap.forEach((row, i) => {
+const house1BorderElements = [];
+house1BorderMap.forEach((row, i) => {
   row.forEach((element, j) => {
-    if (element === 1025) {
-      borderElements.push(
+    if (element === 770) {
+      house1BorderElements.push(
         new Border({
           position: {
-            x: j * 66 + canvas.width / 2 - mapWidth / 2 + 66,
-            y: i * 66 + canvas.height / 2 - mapHeight / 2,
-          },
-        })
-      );
-    }
-  });
-});
-
-let houseActivationMap = [];
-for (let i = 0; i < houseActivationArray.length; i += 70) {
-  houseActivationMap.push(houseActivationArray.slice(i, i + 70));
-}
-
-const houseActivationElements = [];
-houseActivationMap.forEach((row, i) => {
-  row.forEach((element, j) => {
-    if (element === 1025) {
-      houseActivationElements.push(
-        new Border({
-          position: {
-            x: j * 66 + canvas.width / 2 - mapWidth / 2 + 66,
-            y: i * 66 + canvas.height / 2 - mapHeight / 2,
+            x: j * 88 + canvas.width / 2 - mapWidth / 2 + 176,
+            y: i * 88 + canvas.height / 2 - mapHeight / 2 - 132,
           },
         })
       );
@@ -121,10 +94,18 @@ houseActivationMap.forEach((row, i) => {
 
 const background = new Sprite({
   position: {
-    x: canvas.width / 2 - mapWidth / 2 + 66,
-    y: canvas.height / 2 - mapHeight / 2,
+    x: canvas.width / 2 - mapWidth / 2 + 176,
+    y: canvas.height / 2 - mapHeight / 2 - 132,
   },
   image: image,
+});
+
+const foreground = new Sprite({
+  position: {
+    x: canvas.width / 2 - mapWidth / 2 + 176,
+    y: canvas.height / 2 - mapHeight / 2 - 132,
+  },
+  image: foregroundImg,
 });
 
 const player = new Sprite({
@@ -132,37 +113,13 @@ const player = new Sprite({
     x: canvas.width / 2 - spriteWidth / 2,
     y: canvas.height / 2,
   },
-  image: playerDown,
+  image: playerUp,
   sprites: {
     up: playerUp,
     down: playerDown,
     left: playerLeft,
     right: playerRight,
   },
-});
-
-const npcMap = new Sprite({
-  position: {
-    x: canvas.width / 2 - spriteWidth + 716,
-    y: canvas.height / 2 - 66,
-  },
-  image: npcMapImg,
-});
-
-const foreground = new Sprite({
-  position: {
-    x: canvas.width / 2 - mapWidth / 2 + 66,
-    y: canvas.height / 2 - mapHeight / 2,
-  },
-  image: foregroundImg,
-});
-
-const foreground2 = new Sprite({
-  position: {
-    x: canvas.width / 2 - mapWidth / 2 + 66,
-    y: canvas.height / 2 - mapHeight / 2,
-  },
-  image: foreground2Img,
 });
 
 const keys = {
@@ -180,38 +137,24 @@ const keys = {
   },
 };
 
-const movables = [
-  background,
-  foreground,
-  foreground2,
-  ...borderElements,
-  ...houseActivationElements,
-  npcMap,
-];
+const movables = [background, ...house1BorderElements, foreground];
 
 function isColliding({ value1, value2 }) {
   return (
     value1.position.x + spriteWidth >= value2.position.x &&
-    value1.position.x <= value2.position.x + 66 &&
+    value1.position.x <= value2.position.x + 88 &&
     value1.position.y + spriteHeight >= value2.position.y &&
-    value1.position.y + spriteHeight / 2 <= value2.position.y + 66
+    value1.position.y <= value2.position.y + 88
   );
 }
-
-const container = document.querySelector(".container");
 
 function animate() {
   window.requestAnimationFrame(animate);
 
   background.draw();
-  npcMap.playerDraw();
   player.playerDraw();
-  foreground2.draw();
   foreground.draw();
-  borderElements.forEach((el) => {
-    el.draw();
-  });
-  houseActivationElements.forEach((el) => {
+  house1BorderElements.forEach((el) => {
     el.draw();
   });
 
@@ -221,36 +164,13 @@ function animate() {
     framesDrawn = 0;
   }
 
-  for (let i = 0; i < houseActivationElements.length; i++) {
-    const houseActivation = houseActivationElements[i];
-
-    if (
-      isColliding({
-        value1: player,
-        value2: {
-          position: {
-            x: houseActivation.position.x,
-            y: houseActivation.position.y,
-          },
-        },
-      })
-    ) {
-      container.style.transition = "1s";
-      container.style.opacity = "0";
-      setTimeout(function () {
-        window.location.href = "house1.html";
-      }, 500);
-    }
-    break;
-  }
-
   let moving = true;
   if (keys.up.pressed && lastKey === "up") {
     player.image = player.sprites.up;
     player.playerMovement();
 
-    for (let i = 0; i < borderElements.length; i++) {
-      const border = borderElements[i];
+    for (let i = 0; i < house1BorderElements.length; i++) {
+      const border = house1BorderElements[i];
 
       if (
         isColliding({
@@ -273,8 +193,8 @@ function animate() {
     player.image = player.sprites.down;
     player.playerMovement();
 
-    for (let i = 0; i < borderElements.length; i++) {
-      const border = borderElements[i];
+    for (let i = 0; i < house1BorderElements.length; i++) {
+      const border = house1BorderElements[i];
 
       if (
         isColliding({
@@ -297,8 +217,8 @@ function animate() {
     player.image = player.sprites.left;
     player.playerMovement();
 
-    for (let i = 0; i < borderElements.length; i++) {
-      const border = borderElements[i];
+    for (let i = 0; i < house1BorderElements.length; i++) {
+      const border = house1BorderElements[i];
 
       if (
         isColliding({
@@ -321,8 +241,8 @@ function animate() {
     player.image = player.sprites.right;
     player.playerMovement();
 
-    for (let i = 0; i < borderElements.length; i++) {
-      const border = borderElements[i];
+    for (let i = 0; i < house1BorderElements.length; i++) {
+      const border = house1BorderElements[i];
 
       if (
         isColliding({

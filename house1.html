@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <title>Portfolio</title>
+  </head>
+  <body>
+    <div id="preloader"></div>
+    <div class="container">
+      <canvas></canvas>
+    </div>
+    <script>
+      const bgAudio = new Audio("Assets/Music/field_theme_1_mp3.mp3");
+      bgAudio.volume = 0.05;
+      bgAudio.loop = true;
+      const preloader = document.getElementById("preloader");
+      window.addEventListener("load", function () {
+        preloader.style.display = "none";
+        bgAudio.play();
+      });
+    </script>
+    <script src="js/house1CollisionsData.js"></script>
+    <script src="js/house1.js"></script>
+  </body>
+</html>
