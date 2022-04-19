@@ -2,7 +2,7 @@
 <map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="70" height="40" tilewidth="12" tileheight="12" infinite="0" nextlayerid="15" nextobjectid="1">
  <tileset firstgid="1" source="Assets/My Project.tsx"/>
  <tileset firstgid="1025" source="Assets/collision.tsx"/>
- <group id="12" name="Objects">
+ <group id="12" name="Objects" visible="0">
   <layer id="1" name="Water" width="70" height="40">
    <data encoding="csv">
 503,473,503,504,503,503,471,440,473,440,471,503,439,505,504,503,441,473,439,472,439,503,439,440,505,473,441,473,503,505,441,440,441,441,471,441,471,504,472,503,440,440,471,441,441,439,439,439,471,471,505,472,472,439,439,504,441,441,473,441,503,505,472,471,503,439,503,471,503,472,
@@ -444,7 +444,7 @@
 </data>
   </layer>
  </group>
- <layer id="14" name="Foreground2" width="70" height="40">
+ <layer id="14" name="Foreground2" width="70" height="40" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

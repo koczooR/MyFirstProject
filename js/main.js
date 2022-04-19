@@ -36,7 +36,7 @@ let framesDrawn = 0;
 const mapWidth = 4620;
 const mapHeight = 2640;
 
-class Sprite {
+export class Sprite {
   constructor({ position, image, sprites }) {
     this.position = position;
     this.image = image;
@@ -69,7 +69,7 @@ class Border {
     this.position = position;
   }
   draw() {
-    ctx.fillStyle = "rgba(255, 0, 0, 0)";
+    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
     ctx.fillRect(this.position.x, this.position.y, 66, 66);
   }
 }
@@ -80,11 +80,31 @@ for (let i = 0; i < collisionsArray.length; i += 70) {
 }
 
 const borderElements = [];
-
 borderMap.forEach((row, i) => {
   row.forEach((element, j) => {
     if (element === 1025) {
       borderElements.push(
+        new Border({
+          position: {
+            x: j * 66 + canvas.width / 2 - mapWidth / 2 + 66,
+            y: i * 66 + canvas.height / 2 - mapHeight / 2,
+          },
+        })
+      );
+    }
+  });
+});
+
+let houseActivationMap = [];
+for (let i = 0; i < houseActivationArray.length; i += 70) {
+  houseActivationMap.push(houseActivationArray.slice(i, i + 70));
+}
+
+const houseActivationElements = [];
+houseActivationMap.forEach((row, i) => {
+  row.forEach((element, j) => {
+    if (element === 1025) {
+      houseActivationElements.push(
         new Border({
           position: {
             x: j * 66 + canvas.width / 2 - mapWidth / 2 + 66,
@@ -149,23 +169,34 @@ const keys = {
   },
 };
 
-const movables = [background, foreground, foreground2, ...borderElements];
+const movables = [
+  background,
+  foreground,
+  foreground2,
+  ...borderElements,
+  ...houseActivationElements,
+];
 
-function isColliding ({ value1, value2 }) {
-  return (value1.position.x + spriteWidth >= value2.position.x &&
+function isColliding({ value1, value2 }) {
+  return (
+    value1.position.x + spriteWidth >= value2.position.x &&
     value1.position.x <= value2.position.x + 66 &&
     value1.position.y + spriteHeight >= value2.position.y &&
-    value1.position.y + spriteHeight / 2 <= value2.position.y + 66);
-  }
+    value1.position.y + spriteHeight / 2 <= value2.position.y + 66
+  );
+}
 
 function animate() {
   window.requestAnimationFrame(animate);
-  
+
   background.draw();
   player.playerDraw();
   foreground2.draw();
   foreground.draw();
   borderElements.forEach((el) => {
+    el.draw();
+  });
+  houseActivationElements.forEach((el) => {
     el.draw();
   });
 
@@ -183,15 +214,19 @@ function animate() {
     for (let i = 0; i < borderElements.length; i++) {
       const border = borderElements[i];
 
-      if (isColliding({
-        value1: player,
-        value2: {position: {x: border.position.x, y: border.position.y + 3}}
-      })) {
+      if (
+        isColliding({
+          value1: player,
+          value2: {
+            position: { x: border.position.x, y: border.position.y + 3 },
+          },
+        })
+      ) {
         moving = false;
       }
     }
     if (moving) {
-      movables.forEach(el => {
+      movables.forEach((el) => {
         el.position.y += 3;
       });
     }
@@ -203,15 +238,19 @@ function animate() {
     for (let i = 0; i < borderElements.length; i++) {
       const border = borderElements[i];
 
-      if (isColliding({
-        value1: player,
-        value2: {position: {x: border.position.x, y: border.position.y - 3}}
-      })) {
+      if (
+        isColliding({
+          value1: player,
+          value2: {
+            position: { x: border.position.x, y: border.position.y - 3 },
+          },
+        })
+      ) {
         moving = false;
       }
     }
     if (moving) {
-      movables.forEach(el => {
+      movables.forEach((el) => {
         el.position.y -= 3;
       });
     }
@@ -223,15 +262,19 @@ function animate() {
     for (let i = 0; i < borderElements.length; i++) {
       const border = borderElements[i];
 
-      if (isColliding({
-        value1: player,
-        value2: {position: {x: border.position.x + 3, y: border.position.y}}
-      })) {
+      if (
+        isColliding({
+          value1: player,
+          value2: {
+            position: { x: border.position.x + 3, y: border.position.y },
+          },
+        })
+      ) {
         moving = false;
       }
     }
     if (moving) {
-      movables.forEach(el => {
+      movables.forEach((el) => {
         el.position.x += 3;
       });
     }
@@ -243,15 +286,19 @@ function animate() {
     for (let i = 0; i < borderElements.length; i++) {
       const border = borderElements[i];
 
-      if (isColliding({
-        value1: player,
-        value2: {position: {x: border.position.x - 3, y: border.position.y}}
-      })) {
+      if (
+        isColliding({
+          value1: player,
+          value2: {
+            position: { x: border.position.x - 3, y: border.position.y },
+          },
+        })
+      ) {
         moving = false;
       }
     }
     if (moving) {
-      movables.forEach(el => {
+      movables.forEach((el) => {
         el.position.x -= 3;
       });
     }
