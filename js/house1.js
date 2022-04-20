@@ -92,6 +92,27 @@ house1BorderMap.forEach((row, i) => {
   });
 });
 
+let house1ExitMap = [];
+for (let i = 0; i < exitActivationArray.length; i += 40) {
+  house1ExitMap.push(exitActivationArray.slice(i, i + 40));
+}
+
+const house1ExitElements = [];
+house1ExitMap.forEach((row, i) => {
+  row.forEach((element, j) => {
+    if (element === 770) {
+      house1ExitElements.push(
+        new Border({
+          position: {
+            x: j * 88 + canvas.width / 2 - mapWidth / 2 + 176,
+            y: i * 88 + canvas.height / 2 - mapHeight / 2 - 132,
+          },
+        })
+      );
+    }
+  });
+});
+
 const background = new Sprite({
   position: {
     x: canvas.width / 2 - mapWidth / 2 + 176,
@@ -137,7 +158,12 @@ const keys = {
   },
 };
 
-const movables = [background, ...house1BorderElements, foreground];
+const movables = [
+  background,
+  ...house1BorderElements,
+  foreground,
+  ...house1ExitElements,
+];
 
 function isColliding({ value1, value2 }) {
   return (
@@ -148,6 +174,8 @@ function isColliding({ value1, value2 }) {
   );
 }
 
+const container = document.querySelector(".container");
+
 function animate() {
   window.requestAnimationFrame(animate);
 
@@ -157,11 +185,37 @@ function animate() {
   house1BorderElements.forEach((el) => {
     el.draw();
   });
+  house1ExitElements.forEach((el) => {
+    el.draw();
+  });
 
   framesDrawn++;
   if (framesDrawn >= 10) {
     currentFrame++;
     framesDrawn = 0;
+  }
+
+  for (let i = 0; i < house1ExitElements.length; i++) {
+    const house1ExitActivation = house1ExitElements[i];
+
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: house1ExitActivation.position.x,
+            y: house1ExitActivation.position.y,
+          },
+        },
+      })
+    ) {
+      container.style.transition = "1s";
+      container.style.opacity = "0";
+      setTimeout(function () {
+        window.location.href = "main.html";
+      }, 500);
+    }
+    break;
   }
 
   let moving = true;

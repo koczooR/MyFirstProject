@@ -119,6 +119,27 @@ houseActivationMap.forEach((row, i) => {
   });
 });
 
+let textActivationMap = [];
+for (let i = 0; i < textActivationArray.length; i += 70) {
+  textActivationMap.push(textActivationArray.slice(i, i + 70));
+}
+
+const textActivationElements = [];
+textActivationMap.forEach((row, i) => {
+  row.forEach((element, j) => {
+    if (element === 1025) {
+      textActivationElements.push(
+        new Border({
+          position: {
+            x: j * 66 + canvas.width / 2 - mapWidth / 2 + 66,
+            y: i * 66 + canvas.height / 2 - mapHeight / 2,
+          },
+        })
+      );
+    }
+  });
+});
+
 const background = new Sprite({
   position: {
     x: canvas.width / 2 - mapWidth / 2 + 66,
@@ -178,6 +199,9 @@ const keys = {
   right: {
     pressed: false,
   },
+  interact: {
+    pressed: false,
+  },
 };
 
 const movables = [
@@ -187,6 +211,7 @@ const movables = [
   ...borderElements,
   ...houseActivationElements,
   npcMap,
+  ...textActivationElements,
 ];
 
 function isColliding({ value1, value2 }) {
@@ -199,6 +224,13 @@ function isColliding({ value1, value2 }) {
 }
 
 const container = document.querySelector(".container");
+const infoBox = document.querySelector(".info_box");
+const textBox = document.querySelector(".text_box");
+
+const npcMapText =
+  "Hello. My name is Piotr Koczorowski.\n I am Junior Front-End Developer.\n Take a look around.";
+
+const textInfo = "To interact press 'E' button.";
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -214,11 +246,57 @@ function animate() {
   houseActivationElements.forEach((el) => {
     el.draw();
   });
+  textActivationElements.forEach((el) => {
+    el.draw();
+  });
 
   framesDrawn++;
   if (framesDrawn >= 10) {
     currentFrame++;
     framesDrawn = 0;
+  }
+
+  let hideText = true;
+  for (let i = 0; i < textActivationElements.length; i++) {
+    const textActivation = textActivationElements[i];
+
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: textActivation.position.x,
+            y: textActivation.position.y,
+          },
+        },
+      })
+    ) {
+      hideText = false;
+      infoBox.style.display = "block";
+      infoBox.innerText = textInfo;
+    }
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: textActivation.position.x,
+            y: textActivation.position.y,
+          },
+        },
+      }) &&
+      keys.interact.pressed
+    ) {
+      hideText = false;
+      console.log("xd");
+      textBox.style.display = "block";
+      textBox.innerText = npcMapText;
+      textBox.style.top = "300px";
+    }
+  }
+  if (hideText) {
+    infoBox.style.display = "none";
+    textBox.style.display = "none";
   }
 
   for (let i = 0; i < houseActivationElements.length; i++) {
@@ -380,6 +458,9 @@ window.addEventListener("keydown", (e) => {
       keys.right.pressed = true;
       lastKey = "right";
       break;
+    case "e":
+      keys.interact.pressed = true;
+      break;
   }
 });
 
@@ -408,6 +489,9 @@ window.addEventListener("keyup", (e) => {
       break;
     case "ArrowRight":
       keys.right.pressed = false;
+      break;
+    case "e":
+      keys.interact.pressed = false;
       break;
   }
 });
