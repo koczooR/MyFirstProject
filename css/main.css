@@ -26,17 +26,6 @@ body {
   left: 0;
 }
 
-/* .text_box::after {
-  content: "";
-  border: 10px solid rgba(255, 255, 255, 0.7);
-  border-top: 10px solid transparent;
-  border-left: 10px solid transparent;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, calc(50% + 2px)) rotate(45deg);
-} */
-
 .container {
   height: 100%;
   display: flex;
@@ -45,7 +34,6 @@ body {
 }
 
 .text_box {
-  display: none;
   position: absolute;
   background: rgba(255, 255, 255, 0.7);
   border: 2px solid #000;
@@ -55,8 +43,18 @@ body {
   padding: 1rem;
   text-align: center;
   line-height: 1.5rem;
-  width: 100%;
-  transform: translateY(600px);
+  width: 80%;
+  bottom: 1rem;
+  visibility: hidden;
+}
+
+.fadeout {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+.fadein {
+  opacity: 1;
+  transition: opacity 0.8s ease-in-out;
 }
 
 #preloader {

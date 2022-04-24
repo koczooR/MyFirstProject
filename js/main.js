@@ -288,15 +288,16 @@ function animate() {
       keys.interact.pressed
     ) {
       hideText = false;
-      console.log("xd");
-      textBox.style.display = "block";
+      textBox.classList.remove("fadeout");
+      textBox.classList.add("fadein");
+      textBox.style.visibility = "visible";
       textBox.innerText = npcMapText;
-      textBox.style.top = "300px";
     }
   }
   if (hideText) {
     infoBox.style.display = "none";
-    textBox.style.display = "none";
+    textBox.classList.remove("fadein");
+    textBox.classList.add("fadeout");
   }
 
   for (let i = 0; i < houseActivationElements.length; i++) {
