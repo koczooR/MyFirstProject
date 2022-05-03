@@ -77,6 +77,7 @@ class Border {
   }
 }
 
+//Creating map boundary fields
 let borderMap = [];
 for (let i = 0; i < collisionsArray.length; i += 70) {
   borderMap.push(collisionsArray.slice(i, i + 70));
@@ -98,6 +99,7 @@ borderMap.forEach((row, i) => {
   });
 });
 
+//Creating house entry fields
 let houseActivationMap = [];
 for (let i = 0; i < houseActivationArray.length; i += 70) {
   houseActivationMap.push(houseActivationArray.slice(i, i + 70));
@@ -119,6 +121,7 @@ houseActivationMap.forEach((row, i) => {
   });
 });
 
+//Creating fields where text can be activated
 let textActivationMap = [];
 for (let i = 0; i < textActivationArray.length; i += 70) {
   textActivationMap.push(textActivationArray.slice(i, i + 70));
@@ -214,6 +217,7 @@ const movables = [
   ...textActivationElements,
 ];
 
+//Collision detection
 function isColliding({ value1, value2 }) {
   return (
     value1.position.x + spriteWidth >= value2.position.x &&
@@ -226,6 +230,8 @@ function isColliding({ value1, value2 }) {
 const container = document.querySelector(".container");
 const infoBox = document.querySelector(".info_box");
 const textBox = document.querySelector(".text_box");
+const gulp = document.querySelector(".gulp");
+const hicks = document.querySelector(".hicks");
 
 const npcMapText =
   "Hello. My name is Piotr Koczorowski.\n I am Junior Front-End Developer.\n Take a look around.";
@@ -233,7 +239,7 @@ const npcMapText =
 const textInfo = "To interact press 'E' button.";
 
 function animate() {
-  window.requestAnimationFrame(animate);
+  window.requestAnimationFrame(animate); //Animation loop
 
   background.draw();
   npcMap.playerDraw();
@@ -250,12 +256,14 @@ function animate() {
     el.draw();
   });
 
+  //Code responsible for the speed of the character's movement animation
   framesDrawn++;
   if (framesDrawn >= 10) {
     currentFrame++;
     framesDrawn = 0;
   }
 
+  //Code responsible for showing and hiding the text next to npc on the main map
   let hideText = true;
   for (let i = 0; i < textActivationElements.length; i++) {
     const textActivation = textActivationElements[i];
@@ -300,6 +308,7 @@ function animate() {
     textBox.classList.add("fadeout");
   }
 
+  //Code responsible for the transition to the subpage (main house entry)
   for (let i = 0; i < houseActivationElements.length; i++) {
     const houseActivation = houseActivationElements[i];
 
@@ -323,6 +332,7 @@ function animate() {
     break;
   }
 
+  //Code responsible for changing position of the background while ArrowUp or W is pressed and stopping the background when collision is detected
   let moving = true;
   if (keys.up.pressed && lastKey === "up") {
     player.image = player.sprites.up;
@@ -348,6 +358,8 @@ function animate() {
       });
     }
   }
+
+  //Code responsible for changing position of the background while ArrowDown or S is pressed and stopping the background when collision is detected
   if (keys.down.pressed && lastKey === "down") {
     player.image = player.sprites.down;
     player.playerMovement();
@@ -372,6 +384,8 @@ function animate() {
       });
     }
   }
+
+  //Code responsible for changing position of the background while ArrowLeft or A is pressed and stopping the background when collision is detected
   if (keys.left.pressed && lastKey === "left") {
     player.image = player.sprites.left;
     player.playerMovement();
@@ -396,6 +410,8 @@ function animate() {
       });
     }
   }
+
+  //Code responsible for changing position of the background while ArrowRight or D is pressed and stopping the background when collision is detected
   if (keys.right.pressed && lastKey === "right") {
     player.image = player.sprites.right;
     player.playerMovement();
@@ -424,7 +440,6 @@ function animate() {
 animate();
 
 let lastKey = "";
-
 window.addEventListener("keydown", (e) => {
   switch (e.key) {
     case "w":

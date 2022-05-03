@@ -113,6 +113,48 @@ house1ExitMap.forEach((row, i) => {
   });
 });
 
+let gulpMap = [];
+for (let i = 0; i < gulpArray.length; i += 40) {
+  gulpMap.push(gulpArray.slice(i, i + 40));
+}
+
+const gulpElements = [];
+gulpMap.forEach((row, i) => {
+  row.forEach((element, j) => {
+    if (element === 770) {
+      gulpElements.push(
+        new Border({
+          position: {
+            x: j * 88 + canvas.width / 2 - mapWidth / 2 + 100,
+            y: i * 88 + canvas.height / 2 - mapHeight / 2 - 132,
+          },
+        })
+      );
+    }
+  });
+});
+
+let hicksMap = [];
+for (let i = 0; i < hicksArray.length; i += 40) {
+  hicksMap.push(hicksArray.slice(i, i + 40));
+}
+
+const hicksElements = [];
+hicksMap.forEach((row, i) => {
+  row.forEach((element, j) => {
+    if (element === 770) {
+      hicksElements.push(
+        new Border({
+          position: {
+            x: j * 88 + canvas.width / 2 - mapWidth / 2 + 252,
+            y: i * 88 + canvas.height / 2 - mapHeight / 2 - 132,
+          },
+        })
+      );
+    }
+  });
+});
+
 const background = new Sprite({
   position: {
     x: canvas.width / 2 - mapWidth / 2 + 176,
@@ -156,6 +198,9 @@ const keys = {
   right: {
     pressed: false,
   },
+  interact: {
+    pressed: false,
+  },
 };
 
 const movables = [
@@ -163,6 +208,8 @@ const movables = [
   ...house1BorderElements,
   foreground,
   ...house1ExitElements,
+  ...gulpElements,
+  ...hicksElements,
 ];
 
 function isColliding({ value1, value2 }) {
@@ -175,6 +222,11 @@ function isColliding({ value1, value2 }) {
 }
 
 const container = document.querySelector(".container");
+const infoBox = document.querySelector(".info_box");
+const gulpTag = document.querySelector(".gulp");
+const hicksTag = document.querySelector(".hicks");
+
+const textInfo = "To interact press 'E' button.";
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -188,11 +240,100 @@ function animate() {
   house1ExitElements.forEach((el) => {
     el.draw();
   });
+  gulpElements.forEach((el) => {
+    el.draw();
+  });
+  hicksElements.forEach((el) => {
+    el.draw();
+  });
 
   framesDrawn++;
   if (framesDrawn >= 10) {
     currentFrame++;
     framesDrawn = 0;
+  }
+
+  let hideText = true;
+  for (let i = 0; i < gulpElements.length; i++) {
+    const gulp = gulpElements[i];
+
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: gulp.position.x,
+            y: gulp.position.y,
+          },
+        },
+      })
+    ) {
+      hideText = false;
+      infoBox.style.display = "block";
+      infoBox.innerText = textInfo;
+    }
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: gulp.position.x,
+            y: gulp.position.y,
+          },
+        },
+      }) &&
+      keys.interact.pressed
+    ) {
+      hideText = false;
+      gulpTag.style.display = "block";
+      setTimeout(function () {
+        gulpTag.style.display = "none";
+      }, 1000);
+    }
+  }
+  if (hideText) {
+    infoBox.style.display = "none";
+  }
+
+  for (let i = 0; i < hicksElements.length; i++) {
+    const hicks = hicksElements[i];
+
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: hicks.position.x,
+            y: hicks.position.y,
+          },
+        },
+      })
+    ) {
+      hideText = false;
+      infoBox.style.display = "block";
+      infoBox.innerText = textInfo;
+    }
+    if (
+      isColliding({
+        value1: player,
+        value2: {
+          position: {
+            x: hicks.position.x,
+            y: hicks.position.y,
+          },
+        },
+      }) &&
+      keys.interact.pressed
+    ) {
+      hideText = false;
+      hicksTag.style.display = "block";
+      setTimeout(function () {
+        hicksTag.style.display = "none";
+      }, 1000);
+    }
+  }
+  if (hideText) {
+    infoBox.style.display = "none";
   }
 
   for (let i = 0; i < house1ExitElements.length; i++) {
@@ -354,6 +495,9 @@ window.addEventListener("keydown", (e) => {
       keys.right.pressed = true;
       lastKey = "right";
       break;
+    case "e":
+      keys.interact.pressed = true;
+      break;
   }
 });
 
@@ -382,6 +526,9 @@ window.addEventListener("keyup", (e) => {
       break;
     case "ArrowRight":
       keys.right.pressed = false;
+      break;
+    case "e":
+      keys.interact.pressed = false;
       break;
   }
 });

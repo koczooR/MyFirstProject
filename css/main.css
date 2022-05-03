@@ -65,3 +65,13 @@ body {
   position: fixed;
   z-index: 100;
 }
+
+.gulp,
+.hicks {
+  display: none;
+  position: absolute;
+  color: #000;
+  font-weight: bold;
+  font-size: 1.25rem;
+  transform: translateY(-15px);
+}
